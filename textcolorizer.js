@@ -113,8 +113,8 @@ function textcolorizer_handle() {
             if (input_size=="3") str_size="15px"
             if (input_size=="4") str_size="17px"
             if (input_size=="5") str_size="22px"
-            if (input_size=="6") str_size="27px"
-            if (input_size=="7") str_size="35px"
+            if (input_size=="25") str_size="27px"
+            if (input_size=="35") str_size="35px"
 			if (input_size=="8") str_size="60px"
             str_style+='font-size:'+str_size+';';
             str_bbcode+='<size="'+input_size+'">';
