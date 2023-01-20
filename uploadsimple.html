@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
+<head>
+<title>Simple upload</title>
+<base href="https://www.upload.ee/" />
+<link href="https://www.upload.ee/static/ubr__style.css" rel="stylesheet" type="text/css" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="expires" content="-1" />
+<meta name="description" content="Simple upload.  Upload.ee" />
+<meta name="keywords" content="" />
+
+<script type="text/javascript" src="https://www.upload.ee/js/js__file_upload.js"></script>
+<script language="javascript" type="text/javascript">
+var path_to_link_script = "/ubr_link_upload.php?page=uploadsimple";
+var path_to_nginx_progress = "https://www.upload.ee/progress";
+var path_to_set_progress_script = "/ubr_set_progress.php?page=uploadsimple";
+var path_to_get_progress_script = "/ubr_get_progress.php?page=uploadsimple";
+var path_to_upload_script = "/cgi-bin/ubr_upload.pl";
+var check_allow_extensions_on_client = 0;
+var check_disallow_extensions_on_client = 0;
+var hide_when_uploading = "upOpts,upContainer,footCont,login_div,login_link_div,login_text_div,logout_div";
+var check_file_name_format = 0;
+var check_null_file_count = 1;
+var check_duplicate_file_count = 1;
+var max_upload_slots = 3;
+var cedric_progress_bar = 1;
+var cedric_hold_to_sync = 1;
+var bucket_progress_bar = 0;
+var progress_bar_width = 400;
+var show_percent_complete = 1;
+var show_files_uploaded = 0;
+var show_current_position = 1;
+var show_current_file = 0;
+var show_elapsed_time = 1;
+var show_est_time_left = 1;
+var show_est_speed = 1;
+var js_upload_inprogress = 'Производится загрузка файлов';
+var js_upload_onbeforeunload = 'Leaving this page will cancel file upload !!!';
+</script>
+</head>
+<body onload="iniFilePage();" style="margin:0;padding:0;background:transparent;">
+<div id="login_text_div" style="position:absolute;">
+<br /><b>Mycc</b>!
+</div>
+<div id="logout_div" style="position:absolute;top:0;right:0;">
+<form action="https://www.upload.ee/logout.html" method="post" style="margin:0;padding:0"><input type="hidden" name="u[page]" value="uploadsimple" /><input type="submit" name="logout" value=" Выйти " class="submitbutton" style="width:80px;" /><input type="hidden" name="___nonce" value="80458378_47b43af60e6330d349b404d88aebae9917eb2387" /><input type="hidden" name="fullurl" value="%2F%3Fpage%3Duploadsimple%26lng%3Drus" /></form>
+</div>
+<table cellpadding="0" cellspacing="0" border="0" width="100%" align="center">
+	<tr>
+	<td class="textbody" valign="top">
+<!-- Start Progress Bar -->
+<div align="center" id="progress_bar" style="display:none;z-index:15000;width:100%;position:absolute;padding-top:3px;">
+	<div class="ubrBar0" style="width:400px">
+		<div id="upload_status_wrap" class="ubrBar1">
+			<div id="upload_status" class="ubrBar2"></div>
+		</div>
+	</div>
+		<br />
+	<table cellpadding="4" cellspacing="0" border="0" class="ubrUploadData">
+	<tr>
+	<td>
+	<table cellpadding="0" cellspacing="0" border="0" width="100%">
+				<tr>
+			<td class='ubrUploadDataLabel'>Прогресс:</td>
+			<td class='ubrUploadDataInfo'><span id="percent_complete">0%</span></td>
+		</tr>
+								<tr>
+			<td class='ubrUploadDataLabel'>Загружено:</td>
+			<td class='ubrUploadDataInfo'><span id="current_position">0</span> / <span id="total_kbytes"></span> KB</td>
+		</tr>
+								<tr>
+			<td class='ubrUploadDataLabel'>Времени прошло:</td>
+			<td class='ubrUploadDataInfo'><span id="elapsed_time">0</span></td>
+		</tr>
+						<tr>
+			<td class='ubrUploadDataLabel'>Осталось:</td>
+			<td class='ubrUploadDataInfo'><span id="est_time_left">0</span></td>
+		</tr>
+						<tr>
+			<td class='ubrUploadDataLabelEnd'>Скорость:</td>
+			<td class='ubrUploadDataInfoEnd'><span id="est_speed">0</span> KB/s.</td>
+		</tr>
+			</table>
+	</td>
+	</tr>
+	</table>
+	</div>
+<!-- End Progress Bar -->
+<div align="center" id="upOpts2">
+<ul id="options">
+<li class="uploadcatselected" id="cat_file" onclick="document.getElementById('picture_stat').style.display='none';return selectCat(this);">Файлы</li>
+<li class="uploadcat" id="cat_picture" onclick="document.getElementById('picture_stat').style.display='block';return selectCat(this);">Картинки</li>
+<script>debug=true;</script><li class="uploadcat" id="cat_link" onclick="return selectCat(this);">URL</li></ul>
+</div>
+<div id="upContainer">
+<div id="upload_div" style="display:none;"><iframe name="upload_iframe" frameborder="0" width="100%" height="200" scrolling="auto"></iframe><div id="addslots"><!--dummy--></div></div>
+<form name="uu_upload" id="uu_upload" target="upload_iframe" method="post" enctype="multipart/form-data"  action="#" style="margin: 0px; padding: 0px;" accept-charset="UTF-8">
+
+<table cellpadding="0" cellspacing="4" border="0" width="100%" bgcolor="#f7f7f7" align="center" style="border:1px solid #ddd;" class="smallcontainer">
+<tr>
+<td align="center">
+<noscript><span class="ubrError">ERROR</span>: Javascript должен быть разрешён.<br /></noscript>
+<a href="https://www.upload.ee/" target="_blank" title="Upload.ee - самый лёгкий способ загрузки файлов!"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMkAAAAOCAMAAACy9cg7AAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAADGUExURQAAAABSuwBQugBSuQNUwQBStABSuQpDthlPsgBSuABSugBSuhJgzQBRuQBStwBRuQBTuQBSugBSuQxu7ABSuCeG9gBTugBRuRR28QZq6wBSugBTuw9y7gBRugBRtTKP+gBStQBTuwBTuhR28Bl78gBTuxd58XR0dDKO+w9x7nZ2doyMjCSD9zKP+yuJ+BB07yyK+QBRtQ5x7jOP+3BwcBt88yyK+X5+foODgw1w7gtv7h5+83JycoSEhIGBgXd3d3t7ewJby14mSqwAAABCdFJOUwBnJJMa7rcFCquCeRE2xUegcFI1+P2LPib8Xe36Ltb55dfO0P7ioDevUyXOROCA5Jfdss39XWi3/oVv6sxuje5a2G8ACV4AAAOySURBVEjH7VXXcuM6DIVEikW9S1azJJfYXpfYiZ04Ttn//6oFlTKT3JncfboPdwKTRyQIQgckBAP872Rxk2MX15vxZgunmxMA327GC4rPxc0a4HUBhf9CuRrgO386/t6F2zb/vGqjfEtH98hfEqfO5zkfj7kY3+TYFuM1NuQ+vj6NFwCn8fgE9niD2iNaru5/PT0N8C0Xzfc+xiGRX14nfMK/2cxlx7S/jCT1P8+j5Ab79THZwjZZbhJbabidbMDeLFC5ThbYr9Hy9/2zgruPMwk0zgvLAU0DPc1MqsJwQg+CGhmbaVpAZnqQWSGvA1wxRR0IBSqgwqK6FVo6OGbBQbcKdGVmoPXWcA5qRbc0obowC0vXLaAm1QJbR1f14OVryCdkeUqO18kxv1zyZIJXkpxADbZJlMwRt7DEJ8Dz/d3zSsFrcukz0psh82einIGMtRhvis8ypokYI8lKszO9WRpnLikLS4azcMZN6ZTckmjnMtlrse/6WUl64pSkC2Sflk7XpWUG4DHmCkZmgfS71Ikl6+uSE9+SPQkYuirBlNDpnyOZT5fY88n0cplEyylSnkxzOE7n9DLnlwkcpms4Tx/Q8vH+7m51p+D1ciVQmqVu53Sl18VB7DKPxrR1shLzJ2DQeWzmYhSzXpd952gMmKW5IE1k2gqhEwaE4KxwfQJ6HevgWngIw1HXrmUHfllo3d7TZtwpaZyVOoR96PddNrji7pdsU7x3O7va5ZgdA+VdJZD/cT49zKsd31U2n1Q5JsTLCwf+8iLeNhJC/cxIXT9IjcZsUhYy6e1pXEt8hWCmHVOZZsTvC1PsNaMmJIu91HfiEJOnoabGAnALmVKG4ejSi53M8AzHMRywC683zd6M01azdLKnhHHDJXpYtGGjXKEXjwZfItlV0bGaR9VBTQ7VWvGOltUENefzrsqriThXc3t+vLp9FGKl4HVj3bS+cJve8r2GmD4zjDYMpGgaF4uP3OteA86+tcK2JbZBpaUZ0qAFgq4CNVx9n/G2dvaGtLN9m3LT2GtgGXskKKTReKHBDKdpme2ytqmhMShtDNf5cGV++eDhPBqNJvRhpPKHVzihS4RdfhjhPUxGDzgZHcTD6Px0e3v7+FvBR6HBhiJAKBQCr4wPGhgGYngMXQwKUBoQ73vF0JTZYINe3kfDwrs9NzKu8tGCty1vrvg/amC0jLAORaqy8ggFIF+uOY8wEMgjES2XuVrhq6urq9UA/+3/HXVVKZHfFu8f+ZEf+Rf5A97gXDsa/CerAAAAAElFTkSuQmCC" alt="Upload.ee - самый лёгкий способ загрузки файлов!" border="0" width="201" height="14" /></a>
+<table cellpadding="0" cellspacing="3" border="0">
+<tr>
+<td align="right"><b>* Выбрать файл:</b></td>
+<td align="left"><div style="display:inline-block;" id="upload_slots"><div id="upfile_0_div"><input type="file" id="upfile_0" name="upfile_0" class="input" size="40" onchange="addUploadSlot2(1)" onkeypress="return handleKey(event)" value="" /><a href="javascript:;" onclick="return addUploadSlot(upload_range)">+</a></div>
+</div><div style="display:none;" id="link_slots"><input id="url" type="text" class="input" name="link" value="" size="40" /></div>
+</td>
+</tr>
+<tr id="emailcontainer">
+<td align="right"><em title="Вводить адрес эл. почты не обязательно">Адрес эл. почты:</em></td>
+<td align="left"><input type="text" id="email" name="email" class="input" style="width: 200px;" title="Вводить адрес эл. почты не обязательно" onblur="checkInvalidEmail()" /><input type="hidden" name="category" value="cat_file" id="cat_val" /> Для ссылок</td>
+</tr>
+<tr>
+<td align="right">Добавить в альбом:</td>
+<td align="left"><select name="gallery_id" id="gallery_id" class="fselect"><option value="" selected="selected">--Выбрать--</option></select> <input type="checkbox" id="unzip" name="unzip" value="1" class="checkbox" /><label for="unzip">Unzip</label></td>
+</tr>
+</table>
+<div id="picture_stat" style="display:none;">
+<table cellpadding="0" cellspacing="3" border="0">
+<tr>
+<td align="right">Размер картинки:</td>
+<td align="left"><select name="big_resize" id="big_resize" class="input">
+<option value="none" selected="selected">Оригинал</option>
+<optgroup label="Landscape">
+<option value="1200x900">1200x900px</option>
+<option value="800x600">800x600px</option>
+<option value="640x480">640x480px</option>
+<option value="400x300">400x300px</option>
+</optgroup>
+<optgroup label="Portrait">
+<option value="900x1200">900x1200px</option>
+<option value="600x800">600x800px</option>
+<option value="480x640">480x640px</option>
+<option value="300x400">300x400px</option>
+</optgroup>
+</select></td>
+</tr>
+<tr>
+<td align="right">Размер маленькой картинки:</td>
+<td align="left"><select name="small_resize" id="small_resize" class="input">
+<optgroup label="Landscape">
+<option value="900x675">900x675px</option>
+<option value="600x450">600x450px</option>
+<option value="500x375">500x375px</option>
+<option value="400x300">400x300px</option>
+<option value="240x180">240x180px</option>
+<option value="120x90" selected="selected">120x90px</option>
+<option value="60x45">60x45px</option>
+</optgroup>
+<optgroup label="Portrait">
+<option value="675x900">675x900px</option>
+<option value="450x600">450x600px</option>
+<option value="300x400">400x300px</option>
+<option value="180x240">180x240px</option>
+<option value="90x120">90x120px</option>
+<option value="45x60">45x60px</option>
+</optgroup>
+</select></td>
+</tr>
+</table>
+</div>
+<div style="width:100%;height:1px;font-size:1px;line-height:1px;"></div>
+<input type="reset" id="reset_button" name="reset_button" class="submitButtonLB" value="Отменить" /><!-- onClick="resetForm();"-->&nbsp;<input type="button" id="upload_button" name="upload_button" value="Загрузить файл" onclick="linkUpload();" class="uploadbutton" />
+</td>
+</tr>
+</table>
+</form>
+<span id="ubr_alert" class="ubrAlert"></span>
+<div id='ajax_div'><!-- Used to store AJAX --></div>
+<span style="font-size:9px;">* <b>Максимальный размер файла 200 MB</b></span>
+</div>
+<script type="text/javascript">
+in_iframe=true;
+</script>
+	</td>
+	</tr>
+	<tr><td align="center">
+	<div id="footCont">
+	<table cellpadding="0" cellspacing="0" border="0" id="footCont_">
+	<tr>
+		<td valign="middle" class="lightblue bold">NB! Upload.ee не отвечает за закаченные сюда файлы!</td>
+	</tr>
+	</table></div>
+	</td></tr>
+</table>
+</body>
+</html>
+<!-- gentime=0.00176 (i=0.00120, errm=0.000025, sess=0.000047, lm=0.000026, mysql=0.000036, lu=0.000914, smi=0.000109, m=0.000160, smd=0.000403, curmem=618968(2097152) peakmem=635264(2097152) 	(mysql: queries:3	 time_spent_total:0.00058722	 sel_rows_total:1	 aff_rows_total:2	 queries: not available, set debug to true to see more data) (lm: invokes=29, total=0.000029)-->
